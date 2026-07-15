@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    container_name: sqli_lab_web
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      - MYSQL_HOST=db
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=root
+      - MYSQL_DATABASE=labdb
+    volumes:
+      - ./logs:/var/log/apache2
+    networks:
+      - sqli_network
+    restart: unless-stopped
+
+  db:
+    image: mariadb:10.8
+    container_name: sqli_lab_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=labdb
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=user
+    ports:
+      - "3306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - sqli_network
+    restart: unless-stopped
+
+volumes:
+  db_data:
+
+networks:
+  sqli_network:
+    driver: bridge
