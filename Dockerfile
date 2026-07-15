@@ -1,12 +1,11 @@
 FROM php:8.2-apache
 
-# تثبيت الملحقات
+# تثبيت ملحقات PHP
 RUN docker-php-ext-install mysqli \
     && docker-php-ext-enable mysqli
 
-# نسخ الملفات
+# نسخ ملفات المشروع (فقط index.php)
 COPY index.php /var/www/html/index.php
-COPY flag.php /var/www/html/flag.php
 
 # ضبط الصلاحيات
 RUN chown -R www-data:www-data /var/www/html \
